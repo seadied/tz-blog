@@ -1,0 +1,20 @@
+{
+  "name": "tz-blog",
+  "version": "1.0.0",
+  "description": "简易博客",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seadied/tz-blog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seadied/tz-blog/issues"
+  },
+  "homepage": "https://github.com/seadied/tz-blog#readme"
+}
