@@ -6,7 +6,7 @@ const encrypt = require("../util/encrypt")
 const User = db.model("users", UserSchema)
 
 //用户注册
-exports.reg = async (ctx) => {
+exports.reg = async ctx => {
     // 用户注册时 post 发过来的数据
     const user = ctx.request.body
     const username = user.username
@@ -53,6 +53,39 @@ exports.reg = async (ctx) => {
     .catch(async err => {
         await ctx.render("isOk", {
             status: "注册失败，请重试"
+        })
+    })
+}
+
+//用户登录
+exports.login = async ctx => {
+    const user = ctx.request.body
+    const username = user.username
+    const password = user.password
+    await new Promise((resolve , reject) => {
+        User.find({username}, (err, data) => {
+            if(err)return reject(err)
+            if(data.length === 0)return reject('用户名不存在')
+            if(data[0].password === encrypt(password)){
+                return resolve(data)
+            }
+            resolve("")
+        })
+    })
+    .then(async data => {
+        if(!data){
+            return ctx.render('isOk', {
+                status : '密码不正确，登录失败'
+            })
+        }
+        await ctx.render('isOk', {
+            status : '登录成功'
+        })
+    })
+
+    .catch(async err => {
+        await ctx.render('isOk', {
+            status : '登录失败'
         })
     })
 }

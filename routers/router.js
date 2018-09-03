@@ -18,11 +18,10 @@ router.get(/^\/user\/(?=reg|login)/, async ctx => {
     await ctx.render("register" ,{show})
 })
 
-//处理用户登录的post
-router.post("/user/login", async ctx => {
-    const data = ctx.request.body
-})
 //注册用户 路由
-router.post("/user/reg" , user.reg)
+router.post("/user/reg", user.reg)
+
+//处理用户登录的post
+router.post("/user/login", user.login)
 
 module.exports = router
