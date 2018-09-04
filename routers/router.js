@@ -4,9 +4,10 @@ const user = require("../control/user")
 const router = new Router
 
 //设计主页
-router.get("/" , async ctx => {
+router.get("/" , user.keepLog, async ctx => {
     await ctx.render("index" , {
-        title : "假装这是一个正经的title"
+        title : "假装这是一个正经的title",
+        session : ctx.session
     })
 })
 
@@ -23,5 +24,8 @@ router.post("/user/reg", user.reg)
 
 //处理用户登录的post
 router.post("/user/login", user.login)
+
+//用户退出
+router.get("/user/logout", user.logout)
 
 module.exports = router
