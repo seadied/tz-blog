@@ -8,7 +8,8 @@ const ArticleSchema = new Schema({
         type : ObjectId,
         ref : "users"
     },
-    tips : String
+    tips : String,
+    commentNum : Number
 }, {versionKey : false, timestamps : {
     createdAt : "created"
 }})

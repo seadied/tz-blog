@@ -1,6 +1,9 @@
 const Router = require("koa-router")
 const article = require("../control/article")
 const user = require("../control/user")
+const comment = require("../control/comment")
+
+
 const router = new Router
 
 //设计主页
@@ -31,5 +34,11 @@ router.post("/article", user.keepLog , article.add)
 
 //文章列表分页路由
 router.get("/page/:id", article.getList)
+
+//文章详情页
+router.get("/article/:id", user.keepLog, article.details)
+
+//添加评论
+router.post("/comment", user.keepLog, comment.save);
 
 module.exports = router

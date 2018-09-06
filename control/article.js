@@ -1,11 +1,14 @@
 const { db } = require("../Schema/config")
 const ArticleSchema  = require("../Schema/article")
+//通过db对象创建操作article数据库的模型对象
+const Article = db.model("articles", ArticleSchema)
 
 const UserSchema  = require("../Schema/user")
 const User = db.model("users", UserSchema)
 
-//通过db对象创建操作article数据库的模型对象
-const Article = db.model("articles", ArticleSchema)
+const CommentSchema  = require("../Schema/comment")
+const Comment = db.model("comments", CommentSchema)
+
 
 //返回文章发表页
 exports.addPage = async ctx => {
@@ -24,10 +27,13 @@ exports.add = async ctx => {
             status : 0
         }
     }
+
+
     //用户登录的情况
     //用户登录情况下， post发过来的数据
     const data = ctx.request.body
     data.author = ctx.session.uid
+    data.commentNum = 0
 
     await new Promise((resolve, reject) => {
         new Article(data).save((err, data) => {
@@ -75,4 +81,33 @@ exports.getList = async ctx => {
         artList,
         maxNum
     })
+}
+
+//文章详情
+exports.details = async ctx => {
+    const _id = ctx.params.id
+
+    //查找文章本身数据
+    const article = await Article
+    .findById(_id)
+    .populate("author", "username")
+    .then(data => data)
+
+    //查找跟文章关联的所有评论
+    const comment = await Comment
+    .find({article: _id})
+    .sort("-created")
+    .populate("from","username avatar")
+    .then(data => data)
+    .catch(err => {
+        console.log(err);
+    })
+    await ctx.render("article", {
+        title : article.title,
+        article,
+        comment,
+        session :ctx.session
+    })
+
+
 }
