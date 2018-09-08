@@ -1,9 +1,5 @@
-const { db } = require("../Schema/config")
-const UserSchema  = require("../Schema/user")
+const User = require("../Models/user")
 const encrypt = require("../util/encrypt")
-
-//通过db对象创建操作user数据库的模型对象
-const User = db.model("users", UserSchema)
 
 //用户注册
 exports.reg = async ctx => {
@@ -121,9 +117,15 @@ exports.login = async ctx => {
 exports.keepLog = async (ctx , next) => {
     if(ctx.session.isNew){
         if(ctx.cookies.get('username')){
+            let uid = ctx.cookies.get("uid")
+            const avatar = await User.findById(uid)
+                .then(data => data.avatar)
+
+
             ctx.session = {
                 username : ctx.cookies.get("username"),
-                uid : ctx.cookies.get("uid")
+                uid,
+                avatar
             }
         }
     }
@@ -141,4 +143,26 @@ exports.logout = async ctx => {
     })
     //后台重定向到 根
     ctx.redirect("/")
+}
+
+//用户的头像上传
+exports.upload = async ctx => {
+    const filename = ctx.req.file.filename
+    
+    let data = {}
+
+    await User.update({_id: ctx.session.uid}, {$set: {avatar: "/avatar/" + filename}}, (err, res) => {
+        if(err){
+            data = {
+                status: 0,
+                message: "上传失败"
+            }
+        }else{
+            data = {
+                status: 1,
+                message: "上传成功"
+            }
+        }
+    })
+    ctx.body = data
 }

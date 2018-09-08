@@ -1,15 +1,6 @@
-const { db } = require("../Schema/config")
-const ArticleSchema  = require("../Schema/article")
-
-const UserSchema  = require("../Schema/user")
-const User = db.model("users", UserSchema)
-
-//通过db对象创建操作article数据库的模型对象
-const Article = db.model("articles", ArticleSchema)
-
-
-const CommentSchema  = require("../Schema/comment")
-const Comment = db.model("comments", CommentSchema)
+const Article = require("../Models/article")
+const User = require("../Models/user")
+const Comment = require("../Models/comment")
 
 //保存评论
 exports.save = async ctx => {
@@ -52,4 +43,41 @@ exports.save = async ctx => {
     })
 
     ctx.body = message
+}
+
+//后台：查询用户所有评论
+exports.comlist = async ctx => {
+    const uid = ctx.session.uid
+
+    const data = await Comment.find({from: uid})
+        .populate("article", "title")
+    
+    ctx.body = {
+        code: 0,
+        count: data.length,
+        data
+    }
+}
+
+//删除对应 id 的评论
+exports.del = async ctx => {
+    // 评论id
+    const commentId = ctx.params.id
+
+    let res = {
+        state: 1,
+        message: "删除成功"
+    }
+
+    await Comment.findById(commentId)
+    .then(data => data.remove())
+    .catch(err => {
+        res = {
+            state: 0,
+            message: "删除失败"
+        }
+    })
+
+    ctx.body = res
+  
 }

@@ -1,13 +1,6 @@
-const { db } = require("../Schema/config")
-const ArticleSchema  = require("../Schema/article")
-//通过db对象创建操作article数据库的模型对象
-const Article = db.model("articles", ArticleSchema)
-
-const UserSchema  = require("../Schema/user")
-const User = db.model("users", UserSchema)
-
-const CommentSchema  = require("../Schema/comment")
-const Comment = db.model("comments", CommentSchema)
+const Article = require("../Models/article")
+const User = require("../Models/user")
+const Comment = require("../Models/comment")
 
 const fs = require("fs")
 const { join } = require("path")

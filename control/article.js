@@ -1,14 +1,6 @@
-const { db } = require("../Schema/config")
-const ArticleSchema  = require("../Schema/article")
-//通过db对象创建操作article数据库的模型对象
-const Article = db.model("articles", ArticleSchema)
-
-const UserSchema  = require("../Schema/user")
-const User = db.model("users", UserSchema)
-
-const CommentSchema  = require("../Schema/comment")
-const Comment = db.model("comments", CommentSchema)
-
+const Article = require("../Models/article")
+const User = require("../Models/user")
+const Comment = require("../Models/comment")
 
 //返回文章发表页
 exports.addPage = async ctx => {
@@ -114,4 +106,38 @@ exports.details = async ctx => {
     })
 
 
+}
+
+//返回用户的所有文章
+exports.artList = async ctx => {
+    const uid = ctx.session.uid
+    
+    const data = await Article.find({author: uid})
+    
+    ctx.body = {
+        code: 0,
+        count: data.length,
+        data
+    }
+}
+
+//删除对应id的文章
+exports.del = async ctx => {
+    const _id = ctx.params.id
+
+    let res = {
+        state: 1,
+        message: "删除成功"
+    }
+
+    await Article.findById(_id)
+    .then(data => data.remove())
+    .catch(err => {
+        res = {
+            state: 0,
+            message: "删除失败"
+        }
+    })
+
+    ctx.body = res
 }
