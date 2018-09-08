@@ -38,9 +38,11 @@ exports.save = async ctx => {
         .update({_id: data.article}, {$inc: {commentNum: 1}}, err => {
             if(err)return console.log(err)
             console.log("评论计数器更新成功");
-            
         })
-        
+        //更新用户的那评论计数器
+        User.update({_id: data.from}, {$inc : {commentNum : 1}}, err => {
+            if(err)return console.log(err)
+        })
     })
     .catch(err => {
         message = {

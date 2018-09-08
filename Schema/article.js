@@ -9,7 +9,7 @@ const ArticleSchema = new Schema({
         ref : "users"
     },
     tips : String,
-    commentNum : Number
+    commentNum : Number,
 }, {versionKey : false, timestamps : {
     createdAt : "created"
 }})
